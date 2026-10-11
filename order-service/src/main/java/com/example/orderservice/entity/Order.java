@@ -5,8 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -21,26 +19,20 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Chỉ lưu customerId theo chuẩn DDD và Microservices Decoupling
+    // Lưu customerId dưới dạng số (Long) thay vì @ManyToOne/khóa ngoại vật lý
     @Column(nullable = false)
     private Long customerId;
+
+    // Lưu productId dưới dạng số (Long) thay vì @ManyToOne/khóa ngoại vật lý
+    @Column(nullable = false)
+    private Long productId;
+
+    @Column(nullable = false)
+    private Integer quantity;
 
     @Column(nullable = false)
     private LocalDateTime orderDate;
 
     @Column(nullable = false, precision = 14, scale = 2)
     private BigDecimal totalAmount;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderStatus status;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<OrderItem> items = new ArrayList<>();
-
-    public void addItem(OrderItem item) {
-        items.add(item);
-        item.setOrder(this);
-    }
 }
